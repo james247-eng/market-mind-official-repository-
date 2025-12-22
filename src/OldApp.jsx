@@ -1,13 +1,9 @@
-
 import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
 import { AuthProvider } from './context/AuthContext';
 import ProtectedRoute from './components/ProtectedRoute';
-
-// Auth Pages
+import ErrorBoundary from './components/ErrorBoundary';
 import Login from './features/auth/Login';
 import Signup from './features/auth/Signup';
-
-// Dashboard Pages
 import Dashboard from './features/dashboard/Dashboard';
 import BusinessList from './features/business/BusinessList';
 import CreateBusiness from './features/business/CreateBusiness';
@@ -16,50 +12,36 @@ import ContentHistory from './features/content/ContentHistory';
 import PostScheduler from './features/scheduling/PostScheduler';
 import SocialAccounts from './features/social/SocialAccounts';
 import Settings from './features/settings/Settings';
-
-// Public Pages
-import LandingPage from './pages/LandingPage';
-import FeaturesPage from './pages/Features';
-import PricingPage from './pages/Pricing';
-import BlogPage from './pages/Blog';
-import PrivacyPage from './pages/Privacy';
-import TermsPage from './pages/Terms';
-
+import Pricing from './features/pricing/Pricing';
 import './App.css';
 
 function App() {
   return (
-    <AuthProvider>
-      <BrowserRouter>
-        <Routes>
-          {/* Public Routes */}
-          <Route path="/" element={<LandingPage />} />
-          <Route path="/features" element={<FeaturesPage />} />
-          <Route path="/pricing" element={<PricingPage />} />
-          <Route path="/blog" element={<BlogPage />} />
-          <Route path="/privacy" element={<PrivacyPage />} />
-          <Route path="/terms" element={<TermsPage />} />
-          
-          {/* Auth Routes */}
-          <Route path="/login" element={<Login />} />
-          <Route path="/signup" element={<Signup />} />
+    <ErrorBoundary>
+      <AuthProvider>
+        <BrowserRouter>
+          <Routes>
+            {/* Public Routes */}
+            <Route path="/login" element={<Login />} />
+            <Route path="/signup" element={<Signup />} />
+            <Route path="/pricing" element={<Pricing />} />
 
-          {/* Protected Dashboard Routes */}
-          <Route 
-            path="/dashboard" 
-            element={
-              <ProtectedRoute>
-                <Dashboard />
-              </ProtectedRoute>
-            } 
-          />
-          
-          <Route 
-            path="/businesses" 
-            element={
-              <ProtectedRoute>
-                <BusinessList />
-              </ProtectedRoute>
+            {/* Protected Routes */}
+            <Route 
+              path="/dashboard" 
+              element={
+                <ProtectedRoute>
+                  <Dashboard />
+                </ProtectedRoute>
+              } 
+            />
+            
+            <Route 
+              path="/businesses" 
+              element={
+                <ProtectedRoute>
+                  <BusinessList />
+                </ProtectedRoute>
             } 
           />
           
@@ -117,12 +99,18 @@ function App() {
             } 
           />
 
-          {/* 404 - Redirect to home */}
-          <Route path="*" element={<Navigate to="/" />} />
+          {/* Redirect root to dashboard */}
+          <Route path="/" element={<Navigate to="/dashboard" />} />
+          
+          {/* 404 - Redirect to dashboard */}
+          <Route path="*" element={<Navigate to="/dashboard" />} />
         </Routes>
       </BrowserRouter>
-    </AuthProvider>
+      </AuthProvider>
+    </ErrorBoundary>
   );
 }
 
+
 export default App;
+
